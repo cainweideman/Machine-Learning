@@ -93,10 +93,10 @@ def train_and_evaluate_model(hidden_layer_sizes, learning_rate, num_epochs, batc
     return test_accuracy
 
 # Hyperparameters tuning ground
-hidden_layer_sizes_options = [(128, 64), (256, 128)]
-learning_rate_options = [0.001, 0.0001]
-num_epochs_options = [10, 20]
-batch_size_options = [16, 32]
+hidden_layer_sizes_options = [(64, 32), (128, 64), (256, 128)]
+learning_rate_options = [0.01, 0.001, 0.0001, 0.00001]
+num_epochs_options = [5, 10, 15, 20, 25]
+batch_size_options = [8, 16, 32, 64, 128]
 
 best_accuracy = 0.0
 best_hyperparameters = None
