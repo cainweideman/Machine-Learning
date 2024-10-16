@@ -11,9 +11,9 @@ import torch.nn as nn
 torch.manual_seed(42)
 
 # If there's a GPU available...
-if torch.cuda.is_available():    
+if torch.cuda.is_available():
 
-    # Tell PyTorch to use the GPU.    
+    # Tell PyTorch to use the GPU.
     device = torch.device("cuda")
 
     print('There are %d GPU(s) available.' % torch.cuda.device_count())
@@ -24,16 +24,20 @@ if torch.cuda.is_available():
 else:
     print('No GPU available, using the CPU instead.')
     device = torch.device("cpu")
-    
+
 df = pd.read_csv("football_matches.csv")
 
-features = df.drop(columns=['season', 'date', 'goal_home_ft', 'goal_away_ft', 'sg_match_ft', 'result'])
+features = df.drop(columns=['season', 'date', 'goal_home_ft',
+                            'goal_away_ft', 'sg_match_ft', 'result'])
 target = df['result']
 
-one_hot_encoded_features = pd.get_dummies(features, columns=['home_team', 'away_team']).astype(int)
+one_hot_encoded_features = pd.get_dummies(features,
+                                          columns=['home_team',
+                                                   'away_team']).astype(int)
 #print(one_hot_encoded_features)
 
-X_train, X_test, y_train, y_test = train_test_split(one_hot_encoded_features, target, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(one_hot_encoded_features, target,
+                                                    test_size=0.2, random_state=42)
 
 # Standardize the features
 scaler = StandardScaler()
@@ -43,7 +47,8 @@ X_test_scaled = scaler.transform(X_test)
 # Convert the data to PyTorch tensors and move them to the GPU (if available)
 X_train_tensor = torch.tensor(X_train_scaled, dtype=torch.float32).to(device)
 X_test_tensor = torch.tensor(X_test_scaled, dtype=torch.float32).to(device)
-y_train_tensor = torch.tensor(y_train.values, dtype=torch.long).to(device)  # Use long for classification
+# Use long for classification
+y_train_tensor = torch.tensor(y_train.values, dtype=torch.long).to(device)
 y_test_tensor = torch.tensor(y_test.values, dtype=torch.long).to(device)
 
 # Define a simple neural network model for classification in PyTorch
@@ -52,8 +57,8 @@ class MatchOutcomePredictor(nn.Module):
         super(MatchOutcomePredictor, self).__init__()
         self.fc1 = nn.Linear(input_dim, 128)
         self.fc2 = nn.Linear(128, 64)
-        self.fc3 = nn.Linear(64, 3)  # Output layer (3 outputs: home win, away win, draw)
-
+        self.fc3 = nn.Linear(64, 3)
+        # Output layer (3 outputs: home win, away win, draw)
     def forward(self, x):
         x = torch.relu(self.fc1(x))
         x = torch.relu(self.fc2(x))
@@ -120,7 +125,8 @@ model.eval()  # Set the model to evaluation mode
 with torch.no_grad():
     # Get the predictions for the test set
     test_outputs = model(X_test_tensor)
-    _, predicted = torch.max(test_outputs.data, 1)  # Get the index of the max log-probability
+    # Get the index of the max log-probability
+    _, predicted = torch.max(test_outputs.data, 1) 
 
     # Calculate testing accuracy
     correct_test = (predicted == y_test_tensor).sum().item()
