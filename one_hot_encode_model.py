@@ -5,6 +5,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 import torch
 import torch.nn as nn
+from collections import Counter
 
 
 # Set seed
@@ -69,10 +70,10 @@ print(model)
 
 # Define the loss function and optimizer
 criterion = nn.CrossEntropyLoss()  # For multi-class classification
-optimizer = torch.optim.Adam(model.parameters(), lr=0.001)  # Adam optimizer
+optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)  # Adam optimizer
 
 # Training parameters
-num_epochs = 10  # Number of training epochs
+num_epochs = 20  # Number of training epochs
 batch_size = 16  # Size of the batches
 
 # Training loop
@@ -128,3 +129,8 @@ with torch.no_grad():
     test_accuracy = correct_test / total_test * 100
 
     print(f'Accuracy of the model on the test set: {test_accuracy:.2f}%')
+# Convert the predicted tensor to a NumPy array if needed
+predictions = predicted.cpu().numpy()  # .cpu() moves the tensor to the CPU if using CUDA
+print('Balance of training data:\n', Counter(y_train.values.tolist()))
+print('Prediction counts:\n', Counter(predictions.tolist()))
+print('True label counts:\n', Counter(y_test.values.tolist()))
