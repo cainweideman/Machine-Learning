@@ -23,10 +23,11 @@ else:
 
 df = pd.read_csv("football_matches.csv")
 
-features = df.drop(columns=['season', 'date', 'goal_home_ft', 'goal_away_ft', 'sg_match_ft', 'result'])
+features = df.drop(columns=['ID', 'season', 'date', 'goal_home_ft', 'goal_away_ft', 'sg_match_ft', 'result'])
 target = df['result']
 
 one_hot_encoded_features = pd.get_dummies(features, columns=['home_team', 'away_team']).astype(int)
+print(one_hot_encoded_features)
 
 X_train, X_test, y_train, y_test = train_test_split(one_hot_encoded_features, target, test_size=0.2, random_state=42)
 scaler = StandardScaler()

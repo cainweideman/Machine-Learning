@@ -1,11 +1,12 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
-from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
 import torch
 import torch.nn as nn
 from collections import Counter
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, classification_report # for confusion matrices
+import numpy as np
+import matplotlib.pyplot as plt
 
 
 # Set seed
@@ -28,9 +29,10 @@ else:
 
 df = pd.read_csv("football_matches.csv")
 
-features = df.drop(columns=['season', 'date', 'goal_home_ft',
+features = df.drop(columns=['ID', 'season', 'date', 'goal_home_ft',
                             'goal_away_ft', 'sg_match_ft', 'result'])
 target = df['result']
+print(Counter(target))
 
 one_hot_encoded_features = pd.get_dummies(features,
                                           columns=['home_team',
@@ -79,7 +81,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)  # Adam optimizer
 
 # Training parameters
 num_epochs = 20  # Number of training epochs
-batch_size = 16  # Size of the batches
+batch_size = 32  # Size of the batches
 
 # Training loop
 for epoch in range(num_epochs):
@@ -138,5 +140,17 @@ with torch.no_grad():
 # Convert the predicted tensor to a NumPy array if needed
 predictions = predicted.cpu().numpy()  # .cpu() moves the tensor to the CPU if using CUDA
 print('Balance of training data:\n', Counter(y_train.values.tolist()))
+
+#print('\nPredictions:\n', predictions.tolist())
 print('Prediction counts:\n', Counter(predictions.tolist()))
+
+#print('\nTrue labels:\n', y_test.values.tolist())
 print('True label counts:\n', Counter(y_test.values.tolist()))
+
+conf_mtx = confusion_matrix(np.array(y_test.values.tolist()), np.array(predictions.tolist()))
+display = ConfusionMatrixDisplay(conf_mtx)
+display.plot()
+plt.show()
+
+target_names = ['Home win', 'Away win', 'Draw']
+print(classification_report(y_test.values.tolist(), predictions.tolist(), target_names=target_names))
