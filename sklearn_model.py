@@ -28,13 +28,15 @@ X_test_scaled = scaler.transform(X_test)
 
 # Define the parameter grid
 param_grid = {
-    'hidden_layer_sizes': [(128,), (128, 64), (128, 64, 32)],  # Different hidden layer configurations
+    'hidden_layer_sizes': [(64,), (64, 32), (64, 32, 16),
+                           (128,), (128, 64), (128, 64, 32),
+                           (256,), (256, 128), (256, 128, 64)],  # Different hidden layer configurations
     'activation': ['relu', 'tanh'],  # Activation functions to try
     'solver': ['adam'],  # Optimizer (keep Adam as it's commonly used for neural networks)
-    'learning_rate_init': [0.0001, 0.001],  # Learning rates to try
-    'alpha': [0.00001, 0.0001],  # Regularization strength (L2 penalty)
-    'batch_size': [32, 64],  # Batch sizes
-    'max_iter': [20, 50],  # Number of iterations (epochs)
+    'learning_rate_init': [0.01, 0.001, 0.0001, 0.00001],  # Learning rates to try
+    'alpha': [0.00001, 0.0001, 0.001],  # Regularization strength (L2 penalty)
+    'batch_size': [8, 16, 32, 64, 128],  # Batch sizes
+    'max_iter': [5, 10, 15, 20, 25],  # Number of iterations (epochs)
     'early_stopping': [True]  # Enable early stopping to avoid overfitting
 }
 
