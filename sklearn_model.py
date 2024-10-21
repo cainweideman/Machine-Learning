@@ -6,6 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, accuracy_score, classification_report
 import matplotlib.pyplot as plt
+from sklearn.inspection import permutation_importance
 import numpy as np
 
 # Load dataset
@@ -62,3 +63,21 @@ best_model = grid_search.best_estimator_
 y_pred = best_model.predict(X_test_scaled)
 test_accuracy = accuracy_score(y_test, y_pred)
 print(f"Test Accuracy with Best Model: {test_accuracy:.4f}")
+# Print classification report
+print(classification_report(y_test, y_pred, target_names=["Home Win", "Draw", "Away Win"]))
+
+# Calculate permutation importance
+perm_importance = permutation_importance(best_model, X_test_scaled, y_test, n_repeats=10, random_state=42)
+
+# Display feature importance
+feature_importances = perm_importance.importances_mean
+sorted_idx = np.argsort(feature_importances)[::-1]  # Sort in descending order
+
+print("Permutation Feature Importances:")
+for idx in sorted_idx:
+    print(f"Feature {X_train.columns[idx]}: Importance {feature_importances[idx]:.4f}")
+
+conf_mtx = confusion_matrix(np.array(y_test), np.array(y_pred))
+display = ConfusionMatrixDisplay(conf_mtx)
+display.plot()
+plt.show()
