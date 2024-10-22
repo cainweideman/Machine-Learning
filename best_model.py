@@ -70,7 +70,7 @@ for idx in sorted_idx:
     print(f"Feature {X_train.columns[idx]}: Importance {feature_importances[idx]:.4f}")
 
 conf_mtx = confusion_matrix(np.array(y_test), np.array(y_pred))
-display = ConfusionMatrixDisplay(conf_mtx)
+display = ConfusionMatrixDisplay(conf_mtx, display_labels=['Home Win', 'Away Win', 'Draw'])
 display.plot()
 plt.show()
 
