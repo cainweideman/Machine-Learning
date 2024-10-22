@@ -14,7 +14,7 @@ df = pd.read_csv("data/football_matches.csv")
 
 # Preprocess the data
 features = df.drop(columns=['ID', 'season', 'date', 'goal_home_ft', 'goal_away_ft', 'sg_match_ft', 'result'])
-target = df['result'].astype('category').cat.codes  # Convert categorical 'result' to numerical
+target = df['result'].astype('category').cat.codes
 
 # One-hot encode categorical features
 features = pd.get_dummies(features, columns=['home_team', 'away_team']).astype(float)
@@ -31,14 +31,14 @@ X_test_scaled = scaler.transform(X_test)
 param_grid = {
     'hidden_layer_sizes': [(64,), (64, 32), (64, 32, 16),
                            (128,), (128, 64), (128, 64, 32),
-                           (256,), (256, 128), (256, 128, 64)],  # Different hidden layer configurations
-    'activation': ['relu', 'tanh'],  # Activation functions to try
-    'solver': ['adam'],  # Optimizer (keep Adam as it's commonly used for neural networks)
-    'learning_rate_init': [0.01, 0.001, 0.0001, 0.00001],  # Learning rates to try
-    'alpha': [0.00001, 0.0001, 0.001],  # Regularization strength (L2 penalty)
-    'batch_size': [8, 16, 32, 64, 128],  # Batch sizes
-    'max_iter': [5, 10, 15, 20, 25],  # Number of iterations (epochs)
-    'early_stopping': [True]  # Enable early stopping to avoid overfitting
+                           (256,), (256, 128), (256, 128, 64)],
+    'activation': ['relu', 'tanh'],
+    'solver': ['adam'],
+    'learning_rate_init': [0.01, 0.001, 0.0001, 0.00001],
+    'alpha': [0.00001, 0.0001, 0.001],
+    'batch_size': [8, 16, 32, 64, 128],
+    'max_iter': [5, 10, 15, 20, 25],
+    'early_stopping': [True]
 }
 
 # Initialize the MLPClassifier
@@ -46,10 +46,10 @@ mlp = MLPClassifier(random_state=42)
 
 # Set up GridSearchCV
 grid_search = GridSearchCV(estimator=mlp, param_grid=param_grid, 
-                           cv=3,  # 3-fold cross-validation
-                           verbose=2,  # Display training progress
-                           n_jobs=-1,  # Use all available CPU cores
-                           scoring='accuracy')  # Metric to optimize
+                           cv=3,
+                           verbose=2,
+                           n_jobs=-1,
+                           scoring='accuracy')
 
 # Fit the grid search model
 grid_search.fit(X_train_scaled, y_train)
@@ -63,7 +63,6 @@ best_model = grid_search.best_estimator_
 y_pred = best_model.predict(X_test_scaled)
 test_accuracy = accuracy_score(y_test, y_pred)
 print(f"Test Accuracy with Best Model: {test_accuracy:.4f}")
-# Print classification report
 print(classification_report(y_test, y_pred, target_names=["Home Win", "Draw", "Away Win"]))
 
 # Calculate permutation importance
@@ -71,7 +70,7 @@ perm_importance = permutation_importance(best_model, X_test_scaled, y_test, n_re
 
 # Display feature importance
 feature_importances = perm_importance.importances_mean
-sorted_idx = np.argsort(feature_importances)[::-1]  # Sort in descending order
+sorted_idx = np.argsort(feature_importances)[::-1]
 
 print("Permutation Feature Importances:")
 for idx in sorted_idx:

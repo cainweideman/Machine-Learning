@@ -14,8 +14,7 @@ df = pd.read_csv("data/football_matches.csv")
 
 # Preprocess the data
 features = df.drop(columns=['ID', 'season', 'date', 'goal_home_ft', 'goal_away_ft', 'sg_match_ft', 'result'])
-#features = df.drop(columns=['ID', 'home_team', 'away_team', 'season', 'date', 'goal_home_ft', 'goal_away_ft', 'sg_match_ft', 'result'])
-target = df['result'].astype('category').cat.codes  # Convert categorical 'result' to numerical
+target = df['result'].astype('category').cat.codes
 
 # One-hot encode categorical features
 features = pd.get_dummies(features, columns=['home_team', 'away_team']).astype(float)
@@ -31,13 +30,13 @@ X_test_scaled = scaler.transform(X_test)
 # Define the MLPClassifier model
 model = MLPClassifier(hidden_layer_sizes=(256, 128), 
                       activation='tanh',
-                      max_iter=10,  # Increase iterations
-                      batch_size=128,  # Same batch size as PyTorch model
+                      max_iter=10,
+                      batch_size=128,
                       solver='adam', 
-                      learning_rate_init=0.001,  # Same learning rate as PyTorch
-                      alpha=0.00001,  # Reduce regularization strength
+                      learning_rate_init=0.001,
+                      alpha=0.00001,
                       random_state=42,
-                      early_stopping=True  # Optional: can prevent overfitting
+                      early_stopping=True
                      )
 
 # Train the model
@@ -63,7 +62,7 @@ perm_importance = permutation_importance(model, X_test_scaled, y_test, n_repeats
 
 # Display feature importance
 feature_importances = perm_importance.importances_mean
-sorted_idx = np.argsort(feature_importances)[::-1]  # Sort in descending order
+sorted_idx = np.argsort(feature_importances)[::-1]
 
 print("Permutation Feature Importances:")
 for idx in sorted_idx:

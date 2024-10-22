@@ -24,7 +24,7 @@ football_matches <- football_matches %>%
     sg_match_ft >= 1 ~ 0, # Home win
     sg_match_ft <= -1 ~ 1, # Away win
     sg_match_ft == 0 ~ 2, # Draw
-    TRUE ~ NA_integer_  # Optional: Catch-all for any cases not covered
+    TRUE ~ NA_integer_
   ))
 
 head(football_matches)
