@@ -1,0 +1,36 @@
+---
+title: "premier_league"
+output: html_document
+date: "2024-10-03"
+---
+
+```{r}
+library(tidyverse)
+library(dplyr)
+```
+
+```{r}
+football_matches <- read.csv("~/Datawise/Machine Learning/premier_league_dataset - df_full_premierleague.csv")
+
+head(football_matches)
+```
+
+```{r}
+class(football_matches$sg_match_ft)
+```
+```{r}
+football_matches <- football_matches %>%
+  mutate(result = case_when(
+    sg_match_ft >= 1 ~ 0, # Home win
+    sg_match_ft <= -1 ~ 1, # Away win
+    sg_match_ft == 0 ~ 2, # Draw
+    TRUE ~ NA_integer_  # Optional: Catch-all for any cases not covered
+  ))
+
+head(football_matches)
+unique(football_matches$home_team)
+```
+
+```{r}
+#write.csv(football_matches, "football_matches.csv", row.names = FALSE)
+```
