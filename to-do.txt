@@ -1,3 +1,0 @@
-Hyperparameters tuning (Epoch, Batch size, Learning Rate)
-Code Documentation
-LateX Report Template (Confusion Matrix, Tables)

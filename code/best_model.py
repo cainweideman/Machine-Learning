@@ -10,7 +10,7 @@ from collections import Counter
 
 
 # Load dataset
-df = pd.read_csv("football_matches.csv")
+df = pd.read_csv("data/football_matches.csv")
 
 # Preprocess the data
 features = df.drop(columns=['ID', 'season', 'date', 'goal_home_ft', 'goal_away_ft', 'sg_match_ft', 'result'])
