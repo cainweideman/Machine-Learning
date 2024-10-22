@@ -2,16 +2,19 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.neural_network import MLPClassifier
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, accuracy_score, classification_report
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, accuracy_score, classification_report, log_loss
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.inspection import permutation_importance
+from collections import Counter
+
 
 # Load dataset
 df = pd.read_csv("football_matches.csv")
 
 # Preprocess the data
 features = df.drop(columns=['ID', 'season', 'date', 'goal_home_ft', 'goal_away_ft', 'sg_match_ft', 'result'])
+#features = df.drop(columns=['ID', 'home_team', 'away_team', 'season', 'date', 'goal_home_ft', 'goal_away_ft', 'sg_match_ft', 'result'])
 target = df['result'].astype('category').cat.codes  # Convert categorical 'result' to numerical
 
 # One-hot encode categorical features
@@ -40,9 +43,16 @@ model = MLPClassifier(hidden_layer_sizes=(256, 128),
 # Train the model
 model.fit(X_train_scaled, y_train)
 
+# Print the loss after training
+print(f"Training loss: {model.loss_:.4f}")
+print("Training accuracy: ", model.score(X_train_scaled, y_train))
+
 # Evaluate the model
 y_pred = model.predict(X_test_scaled)
+y_pred_proba = model.predict_proba(X_test_scaled)
+test_loss = log_loss(y_test, y_pred_proba)
 test_accuracy = accuracy_score(y_test, y_pred)
+print(f"Test set log loss: {test_loss:.4f}")
 print(f"Test Accuracy: {test_accuracy:.4f}")
 
 # Print classification report
@@ -63,3 +73,5 @@ conf_mtx = confusion_matrix(np.array(y_test), np.array(y_pred))
 display = ConfusionMatrixDisplay(conf_mtx)
 display.plot()
 plt.show()
+
+print(Counter(y_test))
